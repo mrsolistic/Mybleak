@@ -9,8 +9,14 @@ $breakpoint-phone:		30em;
 $breakpoint-tablet:		50em;
 $breakpoint-desktop:	70em;
 
-$color-green-85: #36D995;
-$color-green-72: #2DB77E;
+
+:root {
+  --color-primary: #36D995;
+  --color-primary-active: #2DB77E;
+}
+
+$color-primary-default:		var(--color-primary); /* Light */
+$color-primary-active:		var(--color-primary-active); /* Dark */
 
 $color-yellow-100:	#FFC336;
 
@@ -22,14 +28,6 @@ $color-gray-50: #737580;
 $color-gray-40: #595B66;
 $color-gray-25: #363740;
 $color-gray-15: #1F2026;
-
-/*
-	Change the accent colors here. Make sure they work on light an dark
-	backgrounds or as background color for light and dark text color
-*/
-
-$color-primary-default:		$color-green-85; /* Light */
-$color-primary-active:		$color-green-72; /* Dark */
 
 
 /* ==========================================================================
@@ -707,6 +705,10 @@ body {
 	min-height: 100vh;
 	padding-bottom: 6em;
 	background: $color-gray-97;
+
+	@media only screen and (max-width: $breakpoint-phone) {
+		padding-bottom: 8.66666em;
+	}
 }
 
 .wrapper-o {
@@ -740,6 +742,11 @@ body {
 	padding-bottom: 4em;
 	border-radius: 2px;
 	overflow: hidden;
+  transform: scale(1) translate3d(0,0,0);
+	transform-style: preserve-3d;
+	transform-origin: 50% top;
+	opacity: 1;
+	transition: all ease-out .5s;
 
 	@media only screen and (max-width: $breakpoint-tablet) {
 		border-top: 1px solid $color-gray-90;
@@ -749,15 +756,8 @@ body {
 	}
 }
 
-.post-template .wrapper {
-	transform: scale(1) translate3d(0,0,0);
-	transform-style: preserve-3d;
-	transform-origin: 50% top;
-	opacity: 1;
-	transition: all ease-out .5s;
-}
-
-.post-loading .post-template .wrapper {
+.post-loading .post-template .wrapper,
+.post-loading .page-template .wrapper {
 	transform: scale(0.9) translate3d(0,2em,0);
 	opacity: 0;
 }
@@ -857,6 +857,8 @@ body {
 	position: relative;
 	width: 100%;
 	top: 0;
+  display: flex;
+  justify-content: space-between;
 	background: #fff;
 	z-index: 70;
 	transition: all ease-out 0.4s;
@@ -864,24 +866,11 @@ body {
 	transform-style: preserve-3d;
 	opacity: 1;
 
-	&:after {
-		clear: both;
-		content: '';
-		display: table;
-	}
-
 	.nav-logo {
 		max-width: 100%;
 		height: 4em;
 		padding: 1em;
-		padding-right: 5em;
 		box-sizing: border-box;
-
-		&:after {
-			clear: both;
-			content: '';
-			display: table;
-		}
 
 		a {
 			display: inline-flex;
@@ -923,18 +912,36 @@ body {
 	}
 
 	.nav-menu {
-		position: absolute;
-		right: 0;
-		top: 0;
+    display: flex;
 
-		&:after {
-			clear: both;
-			content: '';
-			display: table;
-		}
+    .menu-list {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      line-height: 2em;
 
-		a {
-			display: block;
+      @media only screen and (max-width: $breakpoint-tablet) {
+				display: none;
+			}
+
+      .menu-list-item {
+        padding: 1em;
+
+        a {
+          display: block;
+          white-space: nowrap;
+
+          &.current {
+  					font-weight: 700;
+  					color: $color-gray-25;
+  				}
+        }
+      }
+    }
+
+		.nav-menu-open {
+			display: none;
 			width: 1em;
 			height: 1em;
 			line-height: 1em;
@@ -942,6 +949,10 @@ body {
 			text-align: center;
 			float: left;
 			cursor: pointer;
+
+      @media only screen and (max-width: $breakpoint-tablet) {
+				display: block;
+			}
 
 			&:hover,
 			&:focus {
@@ -952,10 +963,6 @@ body {
 				margin: auto;
 			}
 		}
-
-		.rss {}
-
-		.menu {}
 	}
 }
 
@@ -974,7 +981,7 @@ body {
 	margin-left: -15em;
 	background: transparent;
 	box-sizing: border-box;
-	padding: 3em 0 0;
+	padding: 3em 0 5em;
 	overflow: hidden;
 	transition: all ease-out 0.3s;
 	transform: translate3d(0,2em,0);
@@ -1142,25 +1149,51 @@ body {
 					}
 				}
 			}
-
-			&.menu-list-item-follow {
-				display: flex;
-				padding: 1em 0;
-				justify-content: space-around;
-				align-content: stretch;
-
-				a {
-					flex: 1;
-					text-align: center;
-
-					&:hover,
-					&:focus {
-						background: none;
-					}
-				}
-			}
 		}
 	}
+
+  .menu-members {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 0.5em 1em;
+    box-sizing: border-box;
+    justify-content: space-around;
+    align-content: stretch;
+    z-index: 105;
+    background: #fff;
+    border-top: 1px solid $color-gray-90;
+
+    button {
+      display: block;
+      margin: 0.5em;
+      padding: 1em;
+      flex: 1;
+      border: 0;
+      color: $color-gray-25;
+      background: $color-gray-90;
+      border-radius: 2px;
+      font-weight: 700;
+      cursor: pointer;
+
+      &:hover,
+      &:focus {
+        background: $color-gray-85;
+      }
+
+      &.cta {
+        color: #fff;
+        background: $color-primary-default;
+
+        &:hover,
+        &:focus {
+          background: $color-primary-active;
+        }
+      }
+    }
+  }
 }
 
 .overlay {
@@ -1416,22 +1449,46 @@ body {
 	}
 
 	.credits {
+		display: flex;
+		justify-content: space-between;
 		text-align: center;
 		font-size: 0.75em;
 		line-height: 1.33333em;
 		padding: 2.66666em;
-		overflow: auto;
+
+		@media only screen and (max-width: $breakpoint-phone) {
+			flex-direction: column;
+		}
 
 		span {
 			display: block;
 		}
 
 		.credits-theme {
-			float: left;
+
+			@media only screen and (max-width: $breakpoint-phone) {
+				order: 2;
+				margin-bottom: 0.66666em;
+			}
+		}
+
+		.credits-links {
+
+			@media only screen and (max-width: $breakpoint-phone) {
+				order: 1;
+				margin-bottom: 1.33333em;
+			}
+
+			a {
+				margin: 0 0.66666em;
+			}
 		}
 
 		.credits-software {
-			float: right;
+
+			@media only screen and (max-width: $breakpoint-phone) {
+				order: 3;
+			}
 		}
 	}
 }
@@ -1521,7 +1578,7 @@ body {
 			margin-bottom: 2em;
 			padding: calc( 6em + 4vw) 0 calc( 8em + 2vw);
 			box-sizing: border-box;
-			background: no-repeat center center / cover $color-gray-15;
+			background: $color-gray-15;
 			overflow: hidden;
 			color: #fff;
 
@@ -1537,6 +1594,7 @@ body {
 				box-shadow: 0 0 2em rgba(0,0,0,0.2);
 				transform: rotate(5deg);
 				transition: all ease-out 0.2s;
+				z-index: 20;
 			}
 
 			&:before {
@@ -1548,6 +1606,7 @@ body {
 				height: 100%;
 				background: $color-gray-15;
 				opacity: 0.2;
+				z-index: 10;
 			}
 
 			* {
@@ -1561,6 +1620,23 @@ body {
 			.inner {
 				width: 100%;
 				margin: auto;
+				z-index: 15;
+			}
+
+			.post-cover {
+				position: absolute;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 5;
+
+				img {
+					display: block;
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+  				object-position: 50% 50%;
+				}
 			}
 		}
 	}
@@ -1913,41 +1989,47 @@ body {
    Post Author
    ========================================================================== */
 
+.post-author {
+    margin-top: 4em;
+    padding-top: 4em;
+  	border-top: 1px solid $color-gray-90;
+
+    @media only screen and (max-width: $breakpoint-phone) {
+  		padding-bottom: 2em;
+  	}
+}
+
 .post-authors {
 	text-align: center;
-	margin: 4em 0;
-	padding-top: 2em;
-	border-top: 1px solid $color-gray-90;
 
 	.post-authors-info {}
 	.post-authors-authors {}
 }
 
 
-.post-author {
-	clear: both;
-	margin: 4em 0;
-	padding: 2.5em;
-	background: #fff;
+.post-author-card {
+	display: flex;
 
 	@media only screen and (max-width: $breakpoint-phone) {
-		padding: 1em;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 1em;
+    padding-right: 1em;
 	}
 
 	.post-author-avatar {
+    flex-shrink: 0;
 		display: block;
-		float: left;
 		width: 6em;
 		height: 6em;
-		margin: 0;
+		margin: 0 2em 0 0;
 		border-radius: 12em;
 		overflow: hidden;
 
 		@media only screen and (max-width: $breakpoint-phone) {
-			float: none;
 			width: 4em;
 			height: 4em;
-			margin-bottom: 1em;
+			margin: 0 auto 1em;
 		}
 
 		img {
@@ -1959,48 +2041,49 @@ body {
 	}
 
 	.post-author-bio {
-		padding-left: 8em;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
 
-		@media only screen and (max-width: $breakpoint-phone) {
-			padding-left: 0;
+    @media only screen and (max-width: $breakpoint-phone) {
+      text-align: center;
 		}
 
 		.post-author-name {
 			font-size: 1.25em;
 			line-height: 1.2em;
 			margin-top: 0;
-			margin-bottom: 0;
+			margin-bottom: 0.75rem;
 			font-weight: 800;
 			color: $color-gray-25;
 		}
 
 		.post-author-about {
-			font-size: 0.75em;
-			line-height: 1.66666em;
-			margin: 0;
-			padding-top: 1em;
-			border-top: 1px solid $color-gray-90;
+			margin-top: 0;
+      margin-bottom: 0.75rem;
 		}
 
 		.post-author-meta {
-			margin-top: 0.571em;
-			margin-bottom: 0;
+      display: flex;
+      flex-wrap: wrap;
+
+      @media only screen and (max-width: $breakpoint-phone) {
+        justify-content: center;
+  		}
 
 			span {
-				display: inline-block;
+				display: block;
 				font-size: 0.875em;
 				line-height: 1.143em;
-				margin-right: 1.143em;
-				margin-bottom: 1.143em;
+				margin-right: 1rem;
+				margin-bottom: 1rem;
 				color: $color-gray-50;
-
-				i {
-					color: $color-gray-65;
-				}
+        white-space: nowrap;
 			}
 
 			.post-author-meta-location {
-
+        font-style: italic;
 			}
 
 			.post-author-meta-website {
@@ -2031,118 +2114,6 @@ body {
 
 	@media only screen and (max-width: $breakpoint-phone) {
 		padding: 0.5em;
-	}
-}
-
-/* ==========================================================================
-   Post Subscribe
-   ========================================================================== */
-
-.post-subscribe {
-	position: relative;
-	padding: 3em 1em 4em;
-	margin: 2em 0 -4em;
-	text-align: center;
-	box-sizing: border-box;
-	border-top: 2px solid $color-green-85;
-	background: radial-gradient(circle, $color-gray-40 10%, $color-gray-25 10%);
-	background-size: 1em 1em;
-	box-shadow: inset 0 0 0 1em $color-gray-25;
-
-	@media only screen and (max-width: $breakpoint-tablet) {
-		margin-bottom: -2em;
-	}
-
-	@media only screen and (max-width: $breakpoint-phone) {
-		padding: 2em 0.5em 1em;
-	}
-
-	p {
-		display: inline-block;
-		font-size: 0.75em;
-		line-height: 1.33333em;
-		letter-spacing: 0.2px;
-		font-weight: 400;
-		margin: 0 3.33333em 3.33333em;
-		padding: 0 0.66666em;
-		background: $color-gray-25;
-		box-shadow: 0 0 0 0.5em $color-gray-25;
-		border-radius: 4px;
-		color: $color-gray-65;
-	}
-
-	.post-subscribe-form {
-		position: relative;
-		display: block;
-		max-width: 32em;
-		margin: 0 auto;
-		box-sizing: border-box;
-
-		@media only screen and (max-width: $breakpoint-phone) {
-			margin: 1em;
-		}
-
-		.post-subscribe-input {
-			width: 100%;
-			height: 3.5em;
-			padding: 0.25em 1em;
-			border: 1px solid $color-gray-90;
-			background: #fff;
-			appearance: none;
-			outline: none;
-			box-shadow: none;
-			box-sizing: border-box;
-			border-radius: 4px;
-			transition: all ease-out 0.2s;
-			box-shadow: 0 0 0 1em $color-gray-25;
-
-			@media only screen and (max-width: $breakpoint-phone) {
-				height: 3em;
-				border-radius: 2px;
-			}
-
-			&:hover {
-				border-color: $color-gray-85;
-			}
-
-			&:focus {
-				border-color: $color-primary-default;
-			}
-		}
-
-		.post-subscribe-button {
-			position: absolute;
-			top: 0;
-			right: 0;
-			margin: 0.25em;
-			display: inline-block;
-			height: 3em;
-			padding: 0 1em;
-			font-weight: 500;
-			color: #fff;
-			font-weight: 400;
-			background: $color-primary-default;
-			border: 0;
-			appearance: none;
-			outline: none;
-			box-shadow: none;
-			box-sizing: border-box;
-			border-radius: 2px;
-			transition: all ease-out 0.2s;
-			cursor: pointer;
-
-			@media only screen and (max-width: $breakpoint-phone) {
-				position: relative;
-				width: 100%;
-				margin: 0.5em 0 0;
-			}
-
-
-			&:hover,
-			&:focus {
-				background: $color-primary-active;
-			}
-		}
 	}
 }
 

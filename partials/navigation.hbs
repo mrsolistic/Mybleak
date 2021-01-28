@@ -1,23 +1,7 @@
-<div id="menu" data-target="menu">
-	<div class="menu-header">
-		<span class="menu-label">{{t "Menu"}}</span>
-		<a class="menu-close" data-action="menu" data-target="menu"></a>
-	</div>
-	<ul class="menu-list">
-		{{#foreach navigation}}
-		<li class="menu-list-item">
-			<a class="{{slug}}{{#if current}} current{{/if}}" href="{{url absolute="true"}}">{{label}}</a>
-		</li>
-		{{/foreach}}
-		<li class="menu-list-item menu-list-item-follow">
-			{{#if @site.twitter}}
-			<a class="twitter" href="{{twitter_url}}" title="{{@site.twitter}}"><i class="icon-twitter"></i></a>
-			{{/if}}
-			{{#if @site.facebook}}
-			<a class="facebook" href="{{facebook_url}}" title="{{@site.facebook}}"><i class="icon-facebook"></i></a>
-			{{/if}}
-			<a class="rss" href="{{@site.url}}/rss/"><i class="icon-rss"></i></a>
-		</li>
-	</ul>
-</div>
-<div class="overlay"></div>
+<ul class="menu-list">
+	{{#foreach navigation}}
+	<li class="menu-list-item">
+		<a class="{{slug}}{{#if current}} current{{/if}}" href="{{url absolute="true"}}">{{label}}</a>
+	</li>
+	{{/foreach}}
+</ul>
